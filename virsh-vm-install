@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -e
+
+RED='\e[1;31m'
+RESET_COLOR='\033[0m'
+
+if [[ "$EUID" -eq "0" ]]; then
+	echo -e "$RED" "Run this script as non root to continue. Aborting.""$RESET_COLOR"
+	exit 1
+fi
+
+help() {
+        echo -e "\e[1;32mVIRSH VM creation
+
+\e[0;33mUSAGE
+        \e[1;35mCommand syntax\e[0;33m: \e[1;36m./virsh-vm-install \e[1;35m-n\e[0;33m/\e[1;35m--name\e[0;33m \e[1;36mNAME \e[1;35m-m\e[0;33m/\e[1;35m--memory\e[0;33m\e[0;33m \e[1;36mMEMORY \e[1;35m-v\e[0;33m/\e[1;35m--vcpus\e[0;33m \e[1;36mVCPUS \e[1;35m-c\e[0;33m/\e[1;35m--cdrom\e[0;33m \e[1;36mCDROM \e[1;35m-d\e[0;33m/\e[1;35m--disk-size\e[0;33m \e[1;36mDISK-SIZE
+        \e[1;35mUsage\e[0;33m: \e[1;36m./virsh-vm-install \e[1;35m-h\e[0;33m/\e[1;35m--help
+
+\e[0;33mEXPLAINATION
+                Arguments must be used with this script:
+                \e[1;35m-h\e[0;33m|\e[1;35m--help\e[0;33m: display help
+                \e[1;35m-n\e[0;33m|\e[1;35m--name\e[0;33m: Set the domain name, example \e[1;36mtest
+                \e[1;35m-m\e[0;33m|\e[1;35m--memory\e[0;33m: Set the RAM size (in Mb), example \e[1;36m8192
+                \e[1;35m-v\e[0;33m|\e[1;35m--vcpus\e[0;33m: Set the number of vcpus, example \e[1;36m2
+                \e[1;35m-c\e[0;33m|\e[1;35m--cdrom\e[0;33m: Select the path of the ISO to use to install the VM, example \e[1;36m~/ISO/test.iso
+                \e[1;35m-d\e[0;33m|\e[1;35m--disk-size\e[0;33m: Set the disk size (in Gb), example \e[1;36m20
+
+EXAMPLE
+        To create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with short arguments:
+        \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[0;33m
+"
+exit 0
+}
+
+ARGS=$(getopt -o n:m:v:c:d:ush -l name:,memory:,vcpus:,cdrom:,disk-size:,uefi,secure-boot,help -- "$@")
+eval set -- "$ARGS"
+while true
+do
+        case "$1" in
+                -n|--name) NAME=$2; shift 2; ;;
+                -m|--memory) MEMORY=$2; shift 2; ;;
+                -v|--vcpus) VCPUS=$2; shift 2; ;;
+                -c|--cdrom) CDROM=$2; shift 2; ;;
+                -d|--disk-size) DISK=$2; shift 2; ;;
+		-u|--uefi) UEFI=on; shift; ;;
+		-s|--secure-boot) SECUREBOOT=on; shift; ;;
+                -h|--help) help; ;;
+                --) shift; break; ;;
+                 *) echo "Internal error, unhandled option: $1"; exit 1; ;;
+        esac
+done
+
+if [[ -z "${NAME}" ]] || [[ -z "${MEMORY}" ]] || [[ -z "${VCPUS}" ]] || [[ -z "${CDROM}" ]] || [[ -z "${DISK}" ]]; then
+	"$0" -h
+	exit 1
+fi
+
+if [[ -z "$UEFI" ]] && [[ "$SECUREBOOT" = "on" ]]; then
+	echo -e "$RED" "The Secure Boot option must be used with the UEFI option. Aborting.""$RESET_COLOR"
+	exit 1
+fi
+
+if [[ -z $UEFI ]] && [[ -z $SECUREBOOT ]]; then
+BOOT_OPTIONS="uefi=off"
+fi
+
+if [[ "$UEFI" = "on" ]] && [[ -z $SECUREBOOT ]]; then
+BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=no"
+fi
+
+if [[ "$UEFI" = "on" ]] && [[ "$SECUREBOOT" = "on" ]]; then
+BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes"
+fi
+
+virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --network bridge=virbr0,model.type=e1000e --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --disk size="${DISK}" --boot hd,cdrom,bootmenu.enable=on,"${BOOT_OPTIONS}"
