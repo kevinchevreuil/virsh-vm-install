@@ -66,7 +66,7 @@ BOOT_OPTIONS="uefi=off"
 fi
 
 if [[ "$UEFI" = "on" ]] && [[ -z $SECUREBOOT ]]; then
-BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no --tpm model=tpm-crb"
+BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=no --tpm model=tpm-crb"
 fi
 
 if [[ -z "$UEFI" ]] && [[ "$SECUREBOOT" = "on" ]]; then
