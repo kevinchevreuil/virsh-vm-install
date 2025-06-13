@@ -56,8 +56,8 @@ if [[ -z "${NAME}" ]] || [[ -z "${MEMORY}" ]] || [[ -z "${VCPUS}" ]] || [[ -z "$
 	exit 1
 fi
 
-if [[ -z "$UEFI" ]] && [[ "$SECUREBOOT" = "on" ]]; then
-	echo -e "$RED" "The Secure Boot option must be used with the UEFI option. Aborting.""$RESET_COLOR"
+if [[ "$UEFI" = "on" ]] && [[ "$SECUREBOOT" = "on" ]]; then
+	echo -e "$RED" "You cannot used -u/--uefi and -s/--secure-boot at the same time. Aborting.""$RESET_COLOR"
 	exit 1
 fi
 
@@ -69,7 +69,7 @@ if [[ "$UEFI" = "on" ]] && [[ -z $SECUREBOOT ]]; then
 BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no --tpm model=tpm-crb"
 fi
 
-if [[ "$UEFI" = "on" ]] && [[ "$SECUREBOOT" = "on" ]]; then
+if [[ -z "$UEFI" ]] && [[ "$SECUREBOOT" = "on" ]]; then
 BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes --tpm model=tpm-crb"
 fi
 
