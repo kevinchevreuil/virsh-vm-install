@@ -73,4 +73,4 @@ if [[ "$UEFI" = "on" ]] && [[ "$SECUREBOOT" = "on" ]]; then
 BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes"
 fi
 
-virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --network bridge=virbr0,model.type=e1000e --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --disk size="${DISK}" --boot hd,cdrom,bootmenu.enable=on,"${BOOT_OPTIONS}"
+virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --tpm model=tpm-crb --cpu host-model --network bridge=virbr0,model.type=e1000e --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --disk size="${DISK}" --boot hd,cdrom,bootmenu.enable=on,"${BOOT_OPTIONS}"
