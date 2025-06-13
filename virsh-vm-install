@@ -19,16 +19,30 @@ help() {
 
 \e[0;33mEXPLAINATION
                 Arguments must be used with this script:
-                \e[1;35m-h\e[0;33m|\e[1;35m--help\e[0;33m: display help
+                \e[1;35m-h\e[0;33m|\e[1;35m--help\e[0;33m: Display help
                 \e[1;35m-n\e[0;33m|\e[1;35m--name\e[0;33m: Set the domain name, example \e[1;36mtest
                 \e[1;35m-m\e[0;33m|\e[1;35m--memory\e[0;33m: Set the RAM size (in Mb), example \e[1;36m8192
                 \e[1;35m-v\e[0;33m|\e[1;35m--vcpus\e[0;33m: Set the number of vcpus, example \e[1;36m2
                 \e[1;35m-c\e[0;33m|\e[1;35m--cdrom\e[0;33m: Select the path of the ISO to use to install the VM, example \e[1;36m~/ISO/test.iso
                 \e[1;35m-d\e[0;33m|\e[1;35m--disk-size\e[0;33m: Set the disk size (in Gb), example \e[1;36m20
 
-EXAMPLE
+		\e[0;33mOptionals arguments:
+                \e[1;35m-u\e[0;33m|\e[1;35m--uefi\e[0;33m: Enable UEFI without Secure Boot
+                \e[1;35m-s\e[0;33m|\e[1;35m--secure-boot\e[0;33m: Enable UEFI with Secure Boot
+
+\e[0;33mEXAMPLES
         To create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with short arguments:
         \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI without Secure Boot:
+        \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-u \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot:
+        \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-s \e[0;33m
+        To create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with long arguments:
+        \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI without Secure Boot:
+        \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--uefi \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot:
+        \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--secure-boot \e[0;33m
 "
 exit 0
 }
