@@ -5,6 +5,16 @@ set -e
 RED='\e[1;31m'
 RESET_COLOR='\033[0m'
 
+if ! command -v virt-install &> /dev/null; then
+	echo -e "$RED" "You must install the virt-install package to continue. Aborting.""$RESET_COLOR"
+	exit 1
+fi
+
+if [[ ! -d "/usr/share/OVMF" ]]; then
+	echo -e "$RED" "You must install the ovmf or the edk2-ovmf package to continue. Aborting.""$RESET_COLOR"
+	exit 1
+fi
+
 if [[ "$EUID" -eq "0" ]]; then
 	echo -e "$RED" "Run this script as non root to continue. Aborting.""$RESET_COLOR"
 	exit 1
