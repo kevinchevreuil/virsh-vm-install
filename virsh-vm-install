@@ -24,8 +24,8 @@ help() {
         echo -e "\e[1;32mVIRSH VM creation
 
 \e[0;33mUSAGE
-        \e[1;35mCommand syntax\e[0;33m: \e[1;36m./virsh-vm-install \e[1;35m-n\e[0;33m/\e[1;35m--name\e[0;33m \e[1;36mNAME \e[1;35m-m\e[0;33m/\e[1;35m--memory\e[0;33m\e[0;33m \e[1;36mMEMORY \e[1;35m-v\e[0;33m/\e[1;35m--vcpus\e[0;33m \e[1;36mVCPUS \e[1;35m-c\e[0;33m/\e[1;35m--cdrom\e[0;33m \e[1;36mCDROM \e[1;35m-d\e[0;33m/\e[1;35m--disk-size\e[0;33m \e[1;36mDISK-SIZE
-        \e[1;35mUsage\e[0;33m: \e[1;36m./virsh-vm-install \e[1;35m-h\e[0;33m/\e[1;35m--help
+        \e[1;35mBase command syntax\e[0;33m: \e[1;36m./virsh-vm-install \e[1;35m-n\e[0;33m/\e[1;35m--name\e[0;33m \e[1;36mNAME \e[1;35m-m\e[0;33m/\e[1;35m--memory\e[0;33m\e[0;33m \e[1;36mMEMORY \e[1;35m-v\e[0;33m/\e[1;35m--vcpus\e[0;33m \e[1;36mVCPUS \e[1;35m-c\e[0;33m/\e[1;35m--cdrom\e[0;33m \e[1;36mCDROM \e[1;35m-d\e[0;33m/\e[1;35m--disk-size\e[0;33m \e[1;36mDISK-SIZE
+        \e[1;35mDisplay usage\e[0;33m: \e[1;36m./virsh-vm-install \e[1;35m-h\e[0;33m/\e[1;35m--help
 
 \e[0;33mEXPLAINATION
                 Arguments must be used with this script:
@@ -36,19 +36,24 @@ help() {
                 \e[1;35m-c\e[0;33m|\e[1;35m--cdrom\e[0;33m: Select the path of the ISO to use to install the VM, example \e[1;36m~/ISO/test.iso
                 \e[1;35m-d\e[0;33m|\e[1;35m--disk-size\e[0;33m: Set the disk size (in Gb), example \e[1;36m20
 
-		\e[0;33mOptionals arguments:
+		\e[0;33mOptional arguments:
                 \e[1;35m-u\e[0;33m|\e[1;35m--uefi\e[0;33m: Enable UEFI without Secure Boot
                 \e[1;35m-s\e[0;33m|\e[1;35m--secure-boot\e[0;33m: Enable UEFI with Secure Boot
+                \e[1;35m-f\e[0;33m|\e[1;35m--filesystem\e[0;33m: Share a local folder into the VM
 
 \e[0;33mEXAMPLES
         To create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with short arguments:
         \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with shared local folder:
+        \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-f \e[1;36m/home,guest_shared_name \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI without Secure Boot:
         \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-u \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot:
         \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-s \e[0;33m
         To create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with long arguments:
         \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with shared local folder:
+        \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--filesystem \e[1;36m/home,guest_shared_name \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI without Secure Boot:
         \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--uefi \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot:
@@ -57,7 +62,7 @@ help() {
 exit 0
 }
 
-ARGS=$(getopt -o n:m:v:c:d:ush -l name:,memory:,vcpus:,cdrom:,disk-size:,uefi,secure-boot,help -- "$@")
+ARGS=$(getopt -o n:m:v:c:d:f:ush -l name:,memory:,vcpus:,cdrom:,disk-size:,filesystem:,uefi,secure-boot,help -- "$@")
 eval set -- "$ARGS"
 while true
 do
@@ -67,6 +72,7 @@ do
                 -v|--vcpus) VCPUS=$2; shift 2; ;;
                 -c|--cdrom) CDROM=$2; shift 2; ;;
                 -d|--disk-size) DISK=$2; shift 2; ;;
+		-f|--filesystem) FILESYSTEM=$2; shift 2; ;;
 		-u|--uefi) UEFI=on; shift; ;;
 		-s|--secure-boot) SECUREBOOT=on; shift; ;;
                 -h|--help) help; ;;
@@ -86,15 +92,19 @@ if [[ "$UEFI" = "on" ]] && [[ "$SECUREBOOT" = "on" ]]; then
 fi
 
 if [[ -z $UEFI ]] && [[ -z $SECUREBOOT ]]; then
-BOOT_OPTIONS="uefi=off"
+	BOOT_OPTIONS="uefi=off"
 fi
 
 if [[ "$UEFI" = "on" ]] && [[ -z $SECUREBOOT ]]; then
-BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=no --tpm model=tpm-crb"
+	BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=no --tpm model=tpm-crb"
 fi
 
 if [[ -z "$UEFI" ]] && [[ "$SECUREBOOT" = "on" ]]; then
-BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes --tpm model=tpm-crb"
+	BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes --tpm model=tpm-crb"
 fi
 
-virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --network bridge=virbr0,model.type=e1000e --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --disk target.bus=sata,size="${DISK}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS}
+if [[ ! -z "$FILESYSTEM" ]]; then
+	FILESYSTEM="--filesystem "${FILESYSTEM}",driver.type=virtiofs,type=mount,accessmode=passthrough --memorybacking=source.type=memfd,access.mode=shared"
+fi
+
+virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --network bridge=virbr0,model.type=e1000e --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --disk target.bus=sata,size="${DISK}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} ${FILESYSTEM}
