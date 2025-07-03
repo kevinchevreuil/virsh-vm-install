@@ -125,4 +125,4 @@ else
 	VIDEO_DRIVER="qxl"
 fi
 
-virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} --video "${VIDEO_DRIVER}" --memballoon "${MEMBALLOON_ENABLE}" ${FILESYSTEM}
+virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --controller type=usb,model=qemu-xhci --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} --video "${VIDEO_DRIVER}" --memballoon "${MEMBALLOON_ENABLE}" ${FILESYSTEM}
