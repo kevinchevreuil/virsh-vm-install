@@ -102,11 +102,11 @@ if [[ -z $UEFI ]] && [[ -z $SECUREBOOT ]]; then
 fi
 
 if [[ "$UEFI" = "on" ]] && [[ -z $SECUREBOOT ]]; then
-	BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=no --tpm model=tpm-crb"
+	BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=no,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=no"
 fi
 
 if [[ -z "$UEFI" ]] && [[ "$SECUREBOOT" = "on" ]]; then
-	BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes --tpm model=tpm-crb"
+	BOOT_OPTIONS="uefi=on,firmware.feature0.name=secure-boot,firmware.feature0.enabled=yes,firmware.feature1.name=enrolled-keys,firmware.feature1.enabled=yes"
 fi
 
 if [[ ! -z "$FILESYSTEM" ]]; then
@@ -125,4 +125,4 @@ else
 	VIDEO_DRIVER="qxl"
 fi
 
-virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --controller type=usb,model=qemu-xhci --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} --video "${VIDEO_DRIVER}" --memballoon "${MEMBALLOON_ENABLE}" ${FILESYSTEM}
+virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --controller type=usb,model=qemu-xhci --tpm model=tpm-crb --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} --video "${VIDEO_DRIVER}" --memballoon "${MEMBALLOON_ENABLE}" ${FILESYSTEM}
