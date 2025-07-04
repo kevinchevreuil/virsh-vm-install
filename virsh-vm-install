@@ -37,6 +37,7 @@ help() {
                 \e[1;35m-d\e[0;33m|\e[1;35m--disk-size\e[0;33m: Set the disk size (in Gb), example \e[1;36m20
 
 		\e[0;33mOptional arguments:
+                \e[1;35m-t\e[0;33m|\e[1;35m--tpm\e[0;33m: Add an emulated 2.0 TPM device (required for Windows 11)
                 \e[1;35m-p\e[0;33m|\e[1;35m--paravirtualization\e[0;33m: Use the paravirtualization instead of the full virtualization (VirtIO drivers)
                 \e[1;35m-u\e[0;33m|\e[1;35m--uefi\e[0;33m: Enable UEFI without Secure Boot
                 \e[1;35m-s\e[0;33m|\e[1;35m--secure-boot\e[0;33m: Enable UEFI with Secure Boot
@@ -53,6 +54,9 @@ help() {
         \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-u \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot:
         \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-s \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot and emulated TPM device:
+        \e[1;36m./virsh-vm-install \e[1;35m-n \e[1;36mFedora \e[1;35m-m \e[1;36m4096 \e[1;35m-v \e[1;36m2 \e[1;35m-c \e[1;36m~/ISO/fedora.iso \e[1;35m-d \e[1;36m20 \e[1;35m-s \e[0;33m\e[1;35m-t \e[0;33m
+
         To create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with long arguments:
         \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with shared local folder:
@@ -63,11 +67,13 @@ help() {
         \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--uefi \e[0;33m
         \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot:
         \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--secure-boot \e[0;33m
+        \e[0;33mTo create a Fedora VM with 20Gb of disk, 4Go of RAM and 2 vCPUs with UEFI and Secure Boot and emulated TPM device:
+        \e[1;36m./virsh-vm-install \e[1;35m--name \e[1;36mFedora \e[1;35m--memory \e[1;36m4096 \e[1;35m--vcpus \e[1;36m2 \e[1;35m--cdrom \e[1;36m~/ISO/fedora.iso \e[1;35m--disk \e[1;36m20 \e[1;35m--secure-boot\e[0;33m \e[1;35m--tpm \e[0;33m
 "
 exit 0
 }
 
-ARGS=$(getopt -o n:m:v:c:d:f:push -l name:,memory:,vcpus:,cdrom:,disk-size:,filesystem:,paravirtualization,uefi,secure-boot,help -- "$@")
+ARGS=$(getopt -o n:m:v:c:d:f:tpush -l name:,memory:,vcpus:,cdrom:,disk-size:,filesystem:,tpm,paravirtualization,uefi,secure-boot,help -- "$@")
 eval set -- "$ARGS"
 while true
 do
@@ -78,6 +84,7 @@ do
                 -c|--cdrom) CDROM=$2; shift 2; ;;
                 -d|--disk-size) DISK=$2; shift 2; ;;
 		-f|--filesystem) FILESYSTEM=$2; shift 2; ;;
+		-t|--tpm) TPM=on; shift; ;;
 		-p|--paravirtualization) VIRTIO=on; shift; ;;
 		-u|--uefi) UEFI=on; shift; ;;
 		-s|--secure-boot) SECUREBOOT=on; shift; ;;
@@ -113,6 +120,12 @@ if [[ ! -z "$FILESYSTEM" ]]; then
 	FILESYSTEM="--filesystem "${FILESYSTEM}",driver.type=virtiofs,type=mount,accessmode=passthrough --memorybacking=source.type=memfd,access.mode=shared"
 fi
 
+if [[ "$TPM" = "on" ]]; then
+	TPM="--tpm model=tpm-crb"
+else
+	TPM="--tpm none"
+fi
+
 if [[ "$VIRTIO" = "on" ]]; then
 	DISK_BUS="target.bus=virtio"
 	NETWORK_CARD_MODEL="model.type=virtio"
@@ -125,4 +138,4 @@ else
 	VIDEO_DRIVER="qxl"
 fi
 
-virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --controller type=usb,model=qemu-xhci --input none --sound none --tpm model=tpm-crb --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} --video "${VIDEO_DRIVER}" --memballoon "${MEMBALLOON_ENABLE}" ${FILESYSTEM}
+virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=0.0.0.0 --clock offset=localtime --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --controller type=usb,model=qemu-xhci --input none --sound none --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} --video "${VIDEO_DRIVER}" --memballoon "${MEMBALLOON_ENABLE}" ${FILESYSTEM} ${TPM}
