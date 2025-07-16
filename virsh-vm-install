@@ -140,4 +140,29 @@ else
 	MEMBALLOON="none"
 fi
 
-virt-install --connect qemu:///session --hvm --virt-type kvm --machine q35 --cpu host-model --graphics spice,listen=none,${GL} --video ${VIDEO_PARAMS} --memballoon ${MEMBALLOON} --clock offset=localtime --console none --noautoconsole --osinfo detect=off,require=off --os-variant detect=off,require=off --input none --controller type=usb,model=qemu-xhci --sound model=ich9 --name "${NAME}" --memory "${MEMORY}" --vcpus "${VCPUS}" --cdrom "${CDROM}" --network bridge=virbr0,"${NETWORK_CARD_MODEL}" --disk size="${DISK}","${DISK_BUS}" --boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} ${FILESYSTEM} ${TPM}
+virt-install \
+	--connect qemu:///session \
+	--hvm \
+	--virt-type kvm \
+	--machine q35 \
+	--cpu host-model \
+	--graphics spice,listen=none,${GL} \
+	--video ${VIDEO_PARAMS} \
+	--memballoon ${MEMBALLOON} \
+	--clock offset=localtime \
+	--console none \
+	--noautoconsole \
+	--osinfo detect=off,require=off \
+	--os-variant detect=off,require=off \
+	--input none \
+	--controller type=usb,model=qemu-xhci \
+	--sound model=ich9 \
+	--name "${NAME}" \
+	--memory "${MEMORY}" \
+	--vcpus "${VCPUS}" \
+	--cdrom "${CDROM}" \
+	--network bridge=virbr0,"${NETWORK_CARD_MODEL}" \
+	--disk size="${DISK}","${DISK_BUS}" \
+	--boot hd,cdrom,bootmenu.enable=on,${BOOT_OPTIONS} \
+	${FILESYSTEM} \
+	${TPM}
