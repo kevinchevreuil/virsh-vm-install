@@ -100,7 +100,7 @@ if [[ -z "${NAME}" ]] || [[ -z "${MEMORY}" ]] || [[ -z "${VCPUS}" ]] || [[ -z "$
 fi
 
 if [[ "${MEMORY}" -lt "512" ]]; then
-	echo "The size of RAM is too weak. Please increase the value (512 minimal). Aborting."
+	echo "The size of RAM is too weak (actual value: "${MEMORY}"). Please increase the value (minimal 512 Mib required). Aborting."
 	exit 1
 fi
 
