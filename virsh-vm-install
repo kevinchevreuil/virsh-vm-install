@@ -99,6 +99,11 @@ if [[ -z "${NAME}" ]] || [[ -z "${MEMORY}" ]] || [[ -z "${VCPUS}" ]] || [[ -z "$
 	exit 1
 fi
 
+if [[ "${MEMORY}" -lt "512" ]]; then
+	echo "The size of RAM is too weak. Please increase the value (512 minimal). Aborting."
+	exit 1
+fi
+
 if [[ -z $UEFI ]] && [[ -z $SECUREBOOT ]]; then
 	BOOT_OPTIONS="uefi=off"
 fi
