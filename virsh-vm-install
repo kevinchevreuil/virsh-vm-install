@@ -157,6 +157,7 @@ virt-install \
 	--input none \
 	--controller type=usb,model=qemu-xhci \
 	--sound model=ich9 \
+	--check all=off \
 	--name "${NAME}" \
 	--memory "${MEMORY}" \
 	--vcpus "${VCPUS}" \
